@@ -1,8 +1,80 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using TurkMedyaCaseApp.DTO.Models
+@model List<NewsListResponseModel.ItemList>
+
+@{
+    ViewBag.Title = "Haberler";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>Haber List</h2>
+
+
+
+<form method="get" asp-action="Index">
+    <div>
+        <label>Kategoriye Göre Getir:</label>
+        <select id="categoryFilter" name="category">
+            <option value="">Tüm Kategoriler</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.slug" selected="@(category.slug == ViewBag.SelectedCategory as string ? "selected" : string.Empty)">
+                    @category.title
+                </option>
+            }
+        </select>
+
+        <label>Başlıkta Ara:</label>
+        <input type="text" id="keywordFilter" name="keyword" value="@ViewBag.Keyword" />
+
+        <button type="submit">Filtrele</button>
+    </div>
+</form>
+
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var news in Model)
+        {
+            <li>
+                <a asp-action="NewsDetail">
+                    @news.title | Kategori: @news.category.title
+                </a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Uygun içerik bulunamadı.</p>
+}
+
+
+<div>
+    Sayfa @(ViewBag.PageNumber) - @(ViewBag.TotalPages)
+
+    @if (ViewBag.PageNumber > 1)
+    {
+        <a asp-action="Index" asp-route-page="1">İlk Sayfa</a>
+        <a asp-action="Index" asp-route-page="@(ViewBag.PageNumber - 1)">Önceki</a>
+    }
+
+    @if (ViewBag.PageNumber < ViewBag.TotalPages)
+    {
+        <a asp-action="Index" asp-route-page="@(ViewBag.PageNumber + 1)">Sonraki ></a>
+        <a asp-action="Index" asp-route-page="@ViewBag.TotalPages">Son Sayfa >></a>
+    }
 </div>
+
+<script>
+    //Sayfa yüklendiğinde veya yenilendiğinde çalışacak JavaScript kodu. Sayfa yenilendiğinde ya da sadece keyword ile arama yapılmak istendiğinde bir önce ki aşamada seçilen kategorinin seçili kalmasını engelleyip temizlemek için kullanılan bir js kodu
+    document.addEventListener("DOMContentLoaded", function () {
+        //Eğer sayfa yenilenmemişse (performance.navigation.type !== 1)
+        if (performance.navigation.type !== 1) {
+            //Seçili kategoriyi temizle
+            document.getElementById("categoryFilter").value = "";
+        }
+    });
+</script>
+
+
+

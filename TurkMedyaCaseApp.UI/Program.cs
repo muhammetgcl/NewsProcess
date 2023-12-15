@@ -1,7 +1,11 @@
+using TurkMedyaCaseApp.Business.NewsAppService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+//HTTP istemci ekleme islemi
+builder.Services.AddHttpClient<INewsAppService, NewsAppService>();
 
 var app = builder.Build();
 

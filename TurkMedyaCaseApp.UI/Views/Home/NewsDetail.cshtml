@@ -1,0 +1,32 @@
+﻿@using TurkMedyaCaseApp.DTO.Models
+@model NewsDetailResponseModel.Root
+
+@{
+    ViewBag.Title = "Haber Detayı - " + Model.data.newsDetail.title;
+}
+
+<h2>@Model.data.newsDetail.title</h2>
+
+@if (!string.IsNullOrEmpty(Model.data.newsDetail.imageUrl))
+{
+    <img src="@Model.data.newsDetail.imageUrl" alt="@Model.data.newsDetail.title" />
+}
+<p>
+    <strong>Kategori:</strong> @Model.data.newsDetail.category.title <br />
+    <strong>Eklenme Tarihi:</strong> @Model.data.newsDetail.publishDate
+</p>
+
+
+@Html.Raw(Model.data.newsDetail.bodyText)
+
+<h3>Benzer Haberler</h3>
+<ul>
+    @foreach (var similarNewsTitle in Model.data.itemList)
+    {
+        <li>
+            <a asp-action="NewsDetail">
+                @similarNewsTitle.title
+            </a>
+        </li>
+    }
+</ul>
